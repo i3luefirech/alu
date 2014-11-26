@@ -34,6 +34,7 @@ char* m = mue_memory;
 unsigned int c = 0; 	/* carry bit address    */
 unsigned int s = 1;	    /* sum bit address      */
 unsigned int c_in = 2;	/* carry in bit address */
+unsigned int c_c2 = 3;  /* carry from two complement */
 
 
 
@@ -50,6 +51,8 @@ int zero_test(char accumulator[]){
   return 1;
 }
 
+/*
+*/
 void zsflagging(char* flags,char *acc){
   //Zeroflag
   if(zero_test(acc))
@@ -63,10 +66,19 @@ void zsflagging(char* flags,char *acc){
   else
 	clearSignflag(flags);
 }
-
 /*
 */
-void myOverflow(char rega[], char regb[], char accumulator[], char flags[])
+void cflagging(char* flags,int myc){
+  if(myc=='1'||m[c_c2]=='1'){
+  	setCarryflag(flags);
+  }
+  else {
+  	clearCarryflag(flags);
+  }
+}
+/*
+*/
+void oflagging(char rega[], char regb[], char accumulator[], char * flags)
 {
   if(rega[0]=='0'&&regb[0]=='0'){
     if(accumulator[0]=='1'){
@@ -169,9 +181,11 @@ void one_complement(char reg[]){
 void two_complement(char reg[]){
   one_complement(reg);
   int i = 0;
+  m[c_c2]='1';
   for(i=REG_WIDTH-1; i>=0; i--){
   	if(reg[i]=='0'){
   		reg[i]='1';
+ 		m[c_c2]='0';
   		break;
   	}
   	else{
@@ -199,14 +213,9 @@ void op_adc(char rega[], char regb[], char accumulator[], char flags[]){
   	myc=m[c];
   	accumulator[i] = m[s];
   }
-  if(myc=='1'){
-  	setCarryflag(flags);
-  }
-  else {
-  	clearCarryflag(flags);
-  }
+  cflagging(flags,myc);
   zsflagging(flags,accumulator);
-  myOverflow(rega, regb, accumulator, flags);
+  oflagging(rega, regb, accumulator, flags);
 }
 
 /*
@@ -224,14 +233,9 @@ void op_add(char rega[], char regb[], char accumulator[], char flags[]){
   	myc=m[c];
   	accumulator[i] = m[s];
   }
-  if(myc=='1'){
-  	setCarryflag(flags);
-  }
-  else {
-  	clearCarryflag(flags);
-  }
+  cflagging(flags,myc);
   zsflagging(flags,accumulator);
-  myOverflow(rega, regb, accumulator, flags);
+  oflagging(rega, regb, accumulator, flags);
 }
 
 /*
@@ -249,7 +253,7 @@ void op_sub(char rega[], char regb[], char accumulator[], char flags[]){
   }
   two_complement(tw);
   op_add(rega, tw, accumulator, flags);
-  myOverflow(rega, tw, accumulator, flags);
+  oflagging(rega, tw, accumulator, flags);
 }
 
 /*
@@ -272,7 +276,7 @@ void op_alu_sbc(char rega[], char regb[], char accumulator[], char flags[]){
   }
   two_complement(tw);
   op_adc(rega, tw, accumulator, flags);
-  myOverflow(rega, tw, accumulator, flags);
+  oflagging(rega, tw, accumulator, flags);
 }
 
 
@@ -341,14 +345,14 @@ void op_xor(char rega[], char regb[], char accumulator[], char flags[]){
 */
 void op_not_a(char rega[], char regb[], char accumulator[], char flags[]){
   one_complement(rega);
-  myOverflow(rega,regb,accumulator,flags);
+  oflagging(rega,regb,accumulator,flags);
 }
 
 
 /* Einer Komplement von Register regb */
 void op_not_b(char rega[], char regb[], char accumulator[], char flags[]){
   one_complement(regb);
-  myOverflow(rega,regb,accumulator,flags);
+  oflagging(rega,regb,accumulator,flags);
 }
 
 
@@ -358,7 +362,7 @@ void op_not_b(char rega[], char regb[], char accumulator[], char flags[]){
 */
 void op_neg_a(char rega[], char regb[], char accumulator[], char flags[]){
   two_complement(rega);
-  myOverflow(rega,regb,accumulator,flags);
+  oflagging(rega,regb,accumulator,flags);
 }
 
 /*
@@ -367,7 +371,7 @@ void op_neg_a(char rega[], char regb[], char accumulator[], char flags[]){
 */
 void op_neg_b(char rega[], char regb[], char accumulator[], char flags[]){
   two_complement(regb);
-  myOverflow(rega,regb,accumulator,flags);
+  oflagging(rega,regb,accumulator,flags);
 }
 
 /*
@@ -417,8 +421,6 @@ void alu_reset(){
   
   for(i=0;i<max_mue_memory;i++)
     m[i] = '0';
-    m[c] = '0';
-    m[c_in] ='0';
 }
 
 /*
