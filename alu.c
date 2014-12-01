@@ -345,14 +345,14 @@ void op_xor(char rega[], char regb[], char accumulator[], char flags[]){
 */
 void op_not_a(char rega[], char regb[], char accumulator[], char flags[]){
   one_complement(rega);
-  oflagging(rega,regb,accumulator,flags);
+  //oflagging(rega,regb,accumulator,flags);
 }
 
 
 /* Einer Komplement von Register regb */
 void op_not_b(char rega[], char regb[], char accumulator[], char flags[]){
   one_complement(regb);
-  oflagging(rega,regb,accumulator,flags);
+  //oflagging(rega,regb,accumulator,flags);
 }
 
 
@@ -362,7 +362,7 @@ void op_not_b(char rega[], char regb[], char accumulator[], char flags[]){
 */
 void op_neg_a(char rega[], char regb[], char accumulator[], char flags[]){
   two_complement(rega);
-  oflagging(rega,regb,accumulator,flags);
+  //oflagging(rega,regb,accumulator,flags);
 }
 
 /*
@@ -371,7 +371,7 @@ void op_neg_a(char rega[], char regb[], char accumulator[], char flags[]){
 */
 void op_neg_b(char rega[], char regb[], char accumulator[], char flags[]){
   two_complement(regb);
-  oflagging(rega,regb,accumulator,flags);
+  //oflagging(rega,regb,accumulator,flags);
 }
 
 /*
