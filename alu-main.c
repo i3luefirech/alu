@@ -87,6 +87,24 @@ void alu_parse_line(char *cmd_line){
       ldhex2register(operand1, regb);
       alu(ALU_OP_NOT_B, rega, regb, accumulator, flags);
     }
+    
+    if(!strcmp(opcode,"als")){
+      ldhex2register(operand1, rega);
+      alu(ALU_OP_ASL, rega, regb, accumulator, flags);
+    }
+    if(!strcmp(opcode,"lsr")){
+      ldhex2register(operand1, rega);
+      alu(ALU_OP_LSR, rega, regb, accumulator, flags);
+    }
+    if(!strcmp(opcode,"rol")){
+      ldhex2register(operand1, rega);
+      alu(ALU_OP_ROL, rega, regb, accumulator, flags);
+    }
+    if(!strcmp(opcode,"ror")){
+      ldhex2register(operand1, rega);
+      alu(ALU_OP_ROR, rega, regb, accumulator, flags);
+    }
+    
     printf("%s %s\n", opcode, operand1);
     break;
   case 1:

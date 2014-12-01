@@ -384,7 +384,22 @@ void op_neg_b(char rega[], char regb[], char accumulator[], char flags[]){
   asl
 */
 void op_alu_asl(char regina[], char reginb[], char regouta[], char flags[]){
-  
+  int i = 0;
+  char myc = '0';
+  for(i = REG_WIDTH; i >= 0; i--){
+  	if(i==0){
+  		myc=regina[i];
+  	}
+  	else if(i==REG_WIDTH){
+  		regouta[i-1]=myc;
+  	}
+  	else{
+  		regouta[i-1]=regina[i];
+  	}
+  }
+  cflagging(flags,myc);
+  zsflagging(flags,regouta);
+  oflagging(regina, reginb, regouta, flags);
 }
 
 
@@ -393,23 +408,68 @@ void op_alu_asl(char regina[], char reginb[], char regouta[], char flags[]){
   lsr
 */
 void op_alu_lsr(char regina[], char reginb[], char regouta[], char flags[]){
-  
+  int i = 0;
+  char myc = '0';
+  for(i = 0; i <= REG_WIDTH; i++){
+    if(i==REG_WIDTH){
+  		myc=regina[i-1];
+  	}
+  	else if(i==0){
+  		regouta[i]=myc;
+  	}
+  	else{
+  		regouta[i]=regina[i-1];
+  	}
+  }
+  cflagging(flags,myc);
+  zsflagging(flags,regouta);
+  oflagging(regina, reginb, regouta, flags);
 }
 /*
   rotate 
   rotate left
 */
 void op_alu_rol(char regina[], char reginb[], char regouta[], char flags[]){
-  
+  int i = 0;
+  char myc = regina[0];
+  for(i = REG_WIDTH; i >= 0; i--){
+  	if(i==0){
+  		myc=regina[i];
+  	}
+  	else if(i==REG_WIDTH){
+  		regouta[i-1]=myc;
+  	}
+  	else{
+  		regouta[i-1]=regina[i];
+  	}
+  }
+  cflagging(flags,myc);
+  zsflagging(flags,regouta);
+  oflagging(regina, reginb, regouta, flags);
 }
 
 /*
   rotate 
-  rotate left
+  rotate right
   Move each of the bits in  A one place to the right. Bit 7 is filled with the current value of the carry flag whilst the old bit 0 becomes the new carry flag value.
 */
 void op_alu_ror(char regina[], char reginb[], char regouta[], char flags[]){
-  
+  int i = 0;
+  char myc = regina[REG_WIDTH-1];
+  for(i = 0; i <= REG_WIDTH; i++){
+    if(i==REG_WIDTH){
+  		myc=regina[i-1];
+  	}
+  	else if(i==0){
+  		regouta[i]=myc;
+  	}
+  	else{
+  		regouta[i]=regina[i-1];
+  	}
+  }
+  cflagging(flags,myc);
+  zsflagging(flags,regouta);
+  oflagging(regina, reginb, regouta, flags);
 }
 
 
